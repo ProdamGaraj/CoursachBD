@@ -1,0 +1,515 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище Tolkunov_TheatreModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Актер">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ФИО" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ЗаслуженныйАртистРФ" Type="bit" />
+        </EntityType>
+        <EntityType Name="Актер_Роль">
+          <Key>
+            <PropertyRef Name="ID_Актера" />
+            <PropertyRef Name="ID_Роли" />
+          </Key>
+          <Property Name="ID_Актера" Type="int" Nullable="false" />
+          <Property Name="ID_Роли" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Афиша">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Пьесы" Type="int" />
+          <Property Name="Место" Type="nvarchar" MaxLength="50" />
+          <Property Name="ДатаВремя" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Билет">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_Пьесы" Type="int" />
+          <Property Name="Место" Type="int" />
+          <Property Name="ДатаВремяПремьеры" Type="datetime" />
+          <Property Name="Стоимость" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Забронирован" Type="bit" />
+          <Property Name="Выкуплен" Type="bit" />
+        </EntityType>
+        <EntityType Name="Пьеса">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Название" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Автор" Type="nvarchar" MaxLength="50" />
+          <Property Name="Режиссер" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Роль">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Имя" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ID_Пьесы" Type="int" />
+        </EntityType>
+        <EntityType Name="Сцена">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="КоличествоМест" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="ID_Театра" Type="int" />
+          <Property Name="ID_Афиши" Type="int" />
+        </EntityType>
+        <EntityType Name="Театр">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Название" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Актер_Роль_Актер">
+          <End Role="Актер" Type="Self.Актер" Multiplicity="1" />
+          <End Role="Актер_Роль" Type="Self.Актер_Роль" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Актер">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Актер_Роль">
+              <PropertyRef Name="ID_Актера" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Актер_Роль_Роль">
+          <End Role="Роль" Type="Self.Роль" Multiplicity="1" />
+          <End Role="Актер_Роль" Type="Self.Актер_Роль" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Роль">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Актер_Роль">
+              <PropertyRef Name="ID_Роли" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Афиша_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Афиша" Type="Self.Афиша" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Афиша">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Билет_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Билет" Type="Self.Билет" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Билет">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Роль_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Роль" Type="Self.Роль" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Роль">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Сцена_Афиша">
+          <End Role="Афиша" Type="Self.Афиша" Multiplicity="0..1" />
+          <End Role="Сцена" Type="Self.Сцена" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Афиша">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Сцена">
+              <PropertyRef Name="ID_Афиши" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Сцена_Театр1">
+          <End Role="Театр" Type="Self.Театр" Multiplicity="0..1" />
+          <End Role="Сцена" Type="Self.Сцена" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Театр">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Сцена">
+              <PropertyRef Name="ID_Театра" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище Tolkunov_TheatreModelContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Актер" EntityType="Self.Актер" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Актер_Роль" EntityType="Self.Актер_Роль" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Афиша" EntityType="Self.Афиша" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Билет" EntityType="Self.Билет" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Пьеса" EntityType="Self.Пьеса" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Роль" EntityType="Self.Роль" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Сцена" EntityType="Self.Сцена" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Театр" EntityType="Self.Театр" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Актер_Роль_Актер" Association="Self.FK_Актер_Роль_Актер">
+            <End Role="Актер" EntitySet="Актер" />
+            <End Role="Актер_Роль" EntitySet="Актер_Роль" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Актер_Роль_Роль" Association="Self.FK_Актер_Роль_Роль">
+            <End Role="Роль" EntitySet="Роль" />
+            <End Role="Актер_Роль" EntitySet="Актер_Роль" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Афиша_Пьеса" Association="Self.FK_Афиша_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Афиша" EntitySet="Афиша" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Билет_Пьеса" Association="Self.FK_Билет_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Билет" EntitySet="Билет" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Роль_Пьеса" Association="Self.FK_Роль_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Роль" EntitySet="Роль" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Сцена_Афиша" Association="Self.FK_Сцена_Афиша">
+            <End Role="Афиша" EntitySet="Афиша" />
+            <End Role="Сцена" EntitySet="Сцена" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Сцена_Театр1" Association="Self.FK_Сцена_Театр1">
+            <End Role="Театр" EntitySet="Театр" />
+            <End Role="Сцена" EntitySet="Сцена" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Tolkunov_TheatreModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Актер">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ФИО" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ЗаслуженныйАртистРФ" Type="Boolean" />
+          <NavigationProperty Name="Роль" Relationship="Self.Актер_Роль" FromRole="Актер" ToRole="Роль" />
+        </EntityType>
+        <EntityType Name="Афиша">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Пьесы" Type="Int32" />
+          <Property Name="Место" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ДатаВремя" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Пьеса" Relationship="Self.FK_Афиша_Пьеса" FromRole="Афиша" ToRole="Пьеса" />
+          <NavigationProperty Name="Сцена" Relationship="Self.FK_Сцена_Афиша" FromRole="Афиша" ToRole="Сцена" />
+        </EntityType>
+        <EntityType Name="Билет">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_Пьесы" Type="Int32" />
+          <Property Name="Место" Type="Int32" />
+          <Property Name="ДатаВремяПремьеры" Type="DateTime" Precision="3" />
+          <Property Name="Стоимость" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Забронирован" Type="Boolean" />
+          <Property Name="Выкуплен" Type="Boolean" />
+          <NavigationProperty Name="Пьеса" Relationship="Self.FK_Билет_Пьеса" FromRole="Билет" ToRole="Пьеса" />
+        </EntityType>
+        <EntityType Name="Пьеса">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Название" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Автор" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Режиссер" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Афиша" Relationship="Self.FK_Афиша_Пьеса" FromRole="Пьеса" ToRole="Афиша" />
+          <NavigationProperty Name="Билет" Relationship="Self.FK_Билет_Пьеса" FromRole="Пьеса" ToRole="Билет" />
+          <NavigationProperty Name="Роль" Relationship="Self.FK_Роль_Пьеса" FromRole="Пьеса" ToRole="Роль" />
+        </EntityType>
+        <EntityType Name="Роль">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Имя" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ID_Пьесы" Type="Int32" />
+          <NavigationProperty Name="Пьеса" Relationship="Self.FK_Роль_Пьеса" FromRole="Роль" ToRole="Пьеса" />
+          <NavigationProperty Name="Актер" Relationship="Self.Актер_Роль" FromRole="Роль" ToRole="Актер" />
+        </EntityType>
+        <EntityType Name="Сцена">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="КоличествоМест" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="ID_Театра" Type="Int32" />
+          <Property Name="ID_Афиши" Type="Int32" />
+          <NavigationProperty Name="Афиша" Relationship="Self.FK_Сцена_Афиша" FromRole="Сцена" ToRole="Афиша" />
+          <NavigationProperty Name="Театр" Relationship="Self.FK_Сцена_Театр1" FromRole="Сцена" ToRole="Театр" />
+        </EntityType>
+        <EntityType Name="Театр">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Название" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Сцена" Relationship="Self.FK_Сцена_Театр1" FromRole="Театр" ToRole="Сцена" />
+        </EntityType>
+        <Association Name="FK_Афиша_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Афиша" Type="Self.Афиша" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Афиша">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Сцена_Афиша">
+          <End Role="Афиша" Type="Self.Афиша" Multiplicity="0..1" />
+          <End Role="Сцена" Type="Self.Сцена" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Афиша">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Сцена">
+              <PropertyRef Name="ID_Афиши" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Билет_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Билет" Type="Self.Билет" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Билет">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Роль_Пьеса">
+          <End Role="Пьеса" Type="Self.Пьеса" Multiplicity="0..1" />
+          <End Role="Роль" Type="Self.Роль" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пьеса">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Роль">
+              <PropertyRef Name="ID_Пьесы" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Сцена_Театр1">
+          <End Role="Театр" Type="Self.Театр" Multiplicity="0..1" />
+          <End Role="Сцена" Type="Self.Сцена" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Театр">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Сцена">
+              <PropertyRef Name="ID_Театра" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Актер_Роль">
+          <End Role="Актер" Type="Self.Актер" Multiplicity="*" />
+          <End Role="Роль" Type="Self.Роль" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="Tolkunov_TheatreEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Актер" EntityType="Self.Актер" />
+          <EntitySet Name="Афиша" EntityType="Self.Афиша" />
+          <EntitySet Name="Билет" EntityType="Self.Билет" />
+          <EntitySet Name="Пьеса" EntityType="Self.Пьеса" />
+          <EntitySet Name="Роль" EntityType="Self.Роль" />
+          <EntitySet Name="Сцена" EntityType="Self.Сцена" />
+          <EntitySet Name="Театр" EntityType="Self.Театр" />
+          <AssociationSet Name="FK_Афиша_Пьеса" Association="Self.FK_Афиша_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Афиша" EntitySet="Афиша" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Сцена_Афиша" Association="Self.FK_Сцена_Афиша">
+            <End Role="Афиша" EntitySet="Афиша" />
+            <End Role="Сцена" EntitySet="Сцена" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Билет_Пьеса" Association="Self.FK_Билет_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Билет" EntitySet="Билет" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Роль_Пьеса" Association="Self.FK_Роль_Пьеса">
+            <End Role="Пьеса" EntitySet="Пьеса" />
+            <End Role="Роль" EntitySet="Роль" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Сцена_Театр1" Association="Self.FK_Сцена_Театр1">
+            <End Role="Театр" EntitySet="Театр" />
+            <End Role="Сцена" EntitySet="Сцена" />
+          </AssociationSet>
+          <AssociationSet Name="Актер_Роль" Association="Self.Актер_Роль">
+            <End Role="Актер" EntitySet="Актер" />
+            <End Role="Роль" EntitySet="Роль" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище Tolkunov_TheatreModelContainer" CdmEntityContainer="Tolkunov_TheatreEntities">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Актер">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Актер">
+              <MappingFragment StoreEntitySet="Актер">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ФИО" ColumnName="ФИО" />
+                <ScalarProperty Name="ЗаслуженныйАртистРФ" ColumnName="ЗаслуженныйАртистРФ" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Афиша">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Афиша">
+              <MappingFragment StoreEntitySet="Афиша">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_Пьесы" ColumnName="ID_Пьесы" />
+                <ScalarProperty Name="Место" ColumnName="Место" />
+                <ScalarProperty Name="ДатаВремя" ColumnName="ДатаВремя" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Билет">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Билет">
+              <MappingFragment StoreEntitySet="Билет">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_Пьесы" ColumnName="ID_Пьесы" />
+                <ScalarProperty Name="Место" ColumnName="Место" />
+                <ScalarProperty Name="ДатаВремяПремьеры" ColumnName="ДатаВремяПремьеры" />
+                <ScalarProperty Name="Стоимость" ColumnName="Стоимость" />
+                <ScalarProperty Name="Забронирован" ColumnName="Забронирован" />
+                <ScalarProperty Name="Выкуплен" ColumnName="Выкуплен" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Пьеса">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Пьеса">
+              <MappingFragment StoreEntitySet="Пьеса">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Название" ColumnName="Название" />
+                <ScalarProperty Name="Автор" ColumnName="Автор" />
+                <ScalarProperty Name="Режиссер" ColumnName="Режиссер" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Роль">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Роль">
+              <MappingFragment StoreEntitySet="Роль">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Имя" ColumnName="Имя" />
+                <ScalarProperty Name="ID_Пьесы" ColumnName="ID_Пьесы" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Сцена">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Сцена">
+              <MappingFragment StoreEntitySet="Сцена">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="КоличествоМест" ColumnName="КоличествоМест" />
+                <ScalarProperty Name="ID_Театра" ColumnName="ID_Театра" />
+                <ScalarProperty Name="ID_Афиши" ColumnName="ID_Афиши" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Театр">
+            <EntityTypeMapping TypeName="Tolkunov_TheatreModel.Театр">
+              <MappingFragment StoreEntitySet="Театр">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Название" ColumnName="Название" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Актер_Роль" TypeName="Tolkunov_TheatreModel.Актер_Роль" StoreEntitySet="Актер_Роль">
+            <EndProperty Name="Актер">
+              <ScalarProperty Name="ID" ColumnName="ID_Актера" />
+            </EndProperty>
+            <EndProperty Name="Роль">
+              <ScalarProperty Name="ID" ColumnName="ID_Роли" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
